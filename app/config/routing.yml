@@ -1,0 +1,8 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+logout:
+    path: /logout
+user_registration:
+    path:     /inscription
+    defaults: { _controller: AppBundle:Registration:register }
