@@ -12,10 +12,16 @@ use AppBundle\Entity\User;
 */
 class AdminUserController extends Controller
 {
-   // $em = $this->getDoctrine()->getManager();
-   // $users = $em->getRepository(User::class)->findBy([], ['username' => 'asc']);
-   //
-   // return $this->render('admin/user/index.html.twig', [
-   //    'users' => $users,
-   // ]);
+    /**
+     * @Route("/")
+     */
+    public function indexAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $users = $em->getRepository(User::class)->findBy([], ['username' => 'asc']);
+
+        return $this->render('AppBundle:AdminUser:index.html.twig', [
+                'users' => $users,
+             ]);
+    }
 }

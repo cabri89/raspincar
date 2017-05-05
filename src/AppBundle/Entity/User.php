@@ -6,47 +6,62 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use AppBundle\Entity\Common\IdTrait;
 
 /**
- * @ORM\Entity
- * @UniqueEntity(fields="email", message="Email already taken")
- * @UniqueEntity(fields="username", message="Username already taken")
- */
+* @ORM\Entity
+* @UniqueEntity(fields="email", message="Email already taken")
+* @UniqueEntity(fields="username", message="Username already taken")
+*/
 class User implements UserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    use idTrait;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Email()
-     */
+    * @ORM\Column(type="string", length=255, unique=true)
+    * @Assert\NotBlank()
+    * @Assert\Email()
+    */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\NotBlank()
-     */
+    * @ORM\Column(type="string", length=255, unique=true)
+    * @Assert\NotBlank()
+    */
     private $username;
 
     /**
-     * @Assert\NotBlank()
-     * @Assert\Length(max=4096)
-     */
+    * @ORM\Column(type="string", length=255, unique=false)
+    */
+    private $roles;
+
+    /**
+    * @Assert\NotBlank()
+    * @Assert\Length(max=4096)
+    */
     private $plainPassword;
 
     /**
-     * The below length depends on the "algorithm" you use for encoding
-     * the password, but this works well with bcrypt.
-     *
-     * @ORM\Column(type="string", length=64)
-     */
+    * The below length depends on the "algorithm" you use for encoding
+    * the password, but this works well with bcrypt.
+    *
+    * @ORM\Column(type="string", length=64)
+    */
     private $password;
+
+    /**
+    * @ORM\OneToMany(targetEntity="Car", mappedBy="user")
+    */
+    private $cars;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->cars = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     // other properties and methods
 
@@ -58,6 +73,16 @@ class User implements UserInterface
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+
+    public function getRoles()
+    {
+        return [$this->roles];
+    }
+
+    public function setRole($role)
+    {
+        $this->roles = $role;
     }
 
     public function getUsername()
@@ -97,14 +122,49 @@ class User implements UserInterface
         return null;
     }
 
-    // other methods, including security methods like getRoles()
-
-    public function getRoles()
-    {
-        return ['ROLE_USER'];
-    }
-
     public function eraseCredentials()
     {
     }
+
+    /**
+     * Add car
+     *
+     * @param \AppBundle\Entity\Car $car
+     *
+     * @return User
+     */
+    public function addCar(\AppBundle\Entity\Car $car)
+    {
+        $this->cars[] = $car;
+
+        return $this;
+    }
+
+    /**
+     * Remove car
+     *
+     * @param \AppBundle\Entity\Car $car
+     */
+    public function removeCar(\AppBundle\Entity\Car $car)
+    {
+        $this->cars->removeElement($car);
+    }
+
+    /**
+     * Get cars
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCars()
+    {
+        return $this->cars;
+    }
+
+    /**
+* {@inheritdoc}
+*/
+public function __toString()
+{
+   return $this->getUsername();
+}
 }

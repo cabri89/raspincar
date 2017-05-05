@@ -1,0 +1,25 @@
+{% extends '@App/base.html.twig' %}
+
+{% block title %}{{ parent() }}Accueil{% endblock %}
+
+{% block body %}
+{% set _token = csrf_token('DELETE_CAR_TOKEN') %}
+Mes voitures :
+<ul>
+{% for car in cars %}
+<li>
+    {{ car }}
+    <a href="{{ path('app_account_carupdate',{id:car.id}) }}" class="">
+        <span>Modifier</span>
+    </a>
+    <a href="{{ path('app_account_cardelete',{id:car.id,_token:_token}) }}" class="">
+        <span>Supprimer</span>
+    </a>
+</li>
+{% endfor %}
+</ul>
+
+{{ form_start(formCar) }}
+{{ form_end(formCar) }}
+
+{% endblock %}
