@@ -36,6 +36,11 @@ class User implements UserInterface
     private $roles;
 
     /**
+    * @ORM\Column(name="is_active", type="boolean")
+    */
+    private $isActive;
+
+    /**
     * @Assert\NotBlank()
     * @Assert\Length(max=4096)
     */
@@ -56,8 +61,8 @@ class User implements UserInterface
 
 
     /**
-     * Constructor
-     */
+    * Constructor
+    */
     public function __construct()
     {
         $this->cars = new \Doctrine\Common\Collections\ArrayCollection();
@@ -115,6 +120,16 @@ class User implements UserInterface
         $this->password = $password;
     }
 
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
     public function getSalt()
     {
         // The bcrypt algorithm doesn't require a separate salt.
@@ -127,12 +142,12 @@ class User implements UserInterface
     }
 
     /**
-     * Add car
-     *
-     * @param \AppBundle\Entity\Car $car
-     *
-     * @return User
-     */
+    * Add car
+    *
+    * @param \AppBundle\Entity\Car $car
+    *
+    * @return User
+    */
     public function addCar(\AppBundle\Entity\Car $car)
     {
         $this->cars[] = $car;
@@ -141,30 +156,30 @@ class User implements UserInterface
     }
 
     /**
-     * Remove car
-     *
-     * @param \AppBundle\Entity\Car $car
-     */
+    * Remove car
+    *
+    * @param \AppBundle\Entity\Car $car
+    */
     public function removeCar(\AppBundle\Entity\Car $car)
     {
         $this->cars->removeElement($car);
     }
 
     /**
-     * Get cars
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
+    * Get cars
+    *
+    * @return \Doctrine\Common\Collections\Collection
+    */
     public function getCars()
     {
         return $this->cars;
     }
 
     /**
-* {@inheritdoc}
-*/
-public function __toString()
-{
-   return $this->getUsername();
-}
+    * {@inheritdoc}
+    */
+    public function __toString()
+    {
+        return $this->getUsername();
+    }
 }
