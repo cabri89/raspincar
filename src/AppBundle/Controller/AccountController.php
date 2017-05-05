@@ -9,7 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Car;
+use AppBundle\Entity\Maintenance;
 use AppBundle\Form\CarType;
+use AppBundle\Form\MaintenanceType;
 
 /**
 * @Route("/compte")
@@ -23,7 +25,6 @@ class AccountController extends Controller
     public function indexAction(Request $request)
     {
         $user = $this->get('security.context')->getToken()->getUser();
-
         $cars = $user->getCars();
 
         $car = new Car();
@@ -61,13 +62,14 @@ class AccountController extends Controller
     */
     public function carupdateAction(Request $request, Car $car)
     {
+        $maintenance = new Maintenance();
+        $maintenanceForm = $this->createForm(MaintenanceType::class, $maintenance);
 
-        $form = $this->createForm(CarType::class, $car);
+        $carForm = $this->createForm(CarType::class, $car);
 
-        $form->handleRequest($request);
+        $carForm->handleRequest($request);
 
-
-        if ($form->isValid()) {
+        if ($carForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('warning', 'Voiture modifié avec succès !');
@@ -75,10 +77,55 @@ class AccountController extends Controller
             return $this->redirectToRoute('app_account_index');
         }
 
+        $maintenanceForm->handleRequest($request);
+
+        if ($maintenanceForm->isValid()) {
+            $car->setUuid();
+
+            $maintenance->setCar($car);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($maintenance);
+            $em->flush();
+
+            return $this->redirectToRoute('app_account_carupdate', array('id' => $car->getId()));
+        }
+
         return  $this->render('AppBundle:Account:carUpdate.html.twig', [
             'car' => $car,
-            'form' => $form->createView(),
+            'carForm' => $carForm->createView(),
+            'maintenanceForm' => $maintenanceForm->createView(),
         ]);
+    }
+
+    /**
+    * Delete
+    *
+    * @param Request $request Request
+    * @param Maintenance   $maintenance   Maintenance
+    *
+    * @return Response
+    * @Route("/{id}/{idCar}/supprimer-maitenance", requirements={"id":"\d+"})
+    * @Method("GET")
+    */
+    public function maintenancedeleteAction(Request $request, Maintenance $maintenance, $idCar)
+    {
+        if (null === $token = $request->query->get('_token')) {
+            throw $this->createAccessDeniedException('Token missing');
+        }
+
+        if (!$this->isCsrfTokenValid('DELETE_MAINTENANCE_TOKEN', $token)) {
+            throw $this->createAccessDeniedException('Invalid token');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->remove($maintenance);
+
+        $em->flush();
+
+        $this->addFlash('Success', 'Voiture supprimé avec succès !');
+
+        return $this->redirectToRoute('app_account_carupdate', array('id' => $idCar));
     }
 
     /**

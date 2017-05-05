@@ -31,6 +31,12 @@ class User implements UserInterface
     private $username;
 
     /**
+    * @ORM\Column(type="string", length=10, unique=true)
+    * @Assert\NotBlank()
+    */
+    private $phone;
+
+    /**
     * @ORM\Column(type="string", length=255, unique=false)
     */
     private $roles;
@@ -98,6 +104,16 @@ class User implements UserInterface
     public function setUsername($username)
     {
         $this->username = $username;
+    }
+
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
     }
 
     public function getPlainPassword()

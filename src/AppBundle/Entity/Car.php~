@@ -62,10 +62,10 @@ class Car
     /**
     * @ORM\OneToMany(targetEntity="Maintenance", mappedBy="car")
     */
-    private $Maintenances;
+    private $maintenances;
 
     /**
-    * @ORM\OneToMany(targetEntity="Stat", mappedBy="car")
+    * @ORM\OneToMany(targetEntity="Maintenance", mappedBy="car")
     */
     private $stats;
 
@@ -264,7 +264,6 @@ class Car
     public function __construct()
     {
         $this->Maintenances = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->Stats = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -307,39 +306,5 @@ class Car
     public function __toString()
     {
         return $this->getMarque().' '.$this->getModele().' '.$this->getCouleur();
-    }
-
-    /**
-     * Add stat
-     *
-     * @param \AppBundle\Entity\Maintenance $stat
-     *
-     * @return Car
-     */
-    public function addStat(\AppBundle\Entity\Maintenance $stat)
-    {
-        $this->stats[] = $stat;
-
-        return $this;
-    }
-
-    /**
-     * Remove stat
-     *
-     * @param \AppBundle\Entity\Maintenance $stat
-     */
-    public function removeStat(\AppBundle\Entity\Maintenance $stat)
-    {
-        $this->stats->removeElement($stat);
-    }
-
-    /**
-     * Get stats
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getStats()
-    {
-        return $this->stats;
     }
 }

@@ -5,44 +5,39 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class CarType extends AbstractType
+class MaintenanceType extends AbstractType
 {
     /**
-     * {@inheritdoc}
-     */
+    * {@inheritdoc}
+    */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        // ->add('uuid')
-        ->add('marque')
-        ->add('modele')
-        ->add('plaque')
+        ->add('type','textarea')
+        ->add('dateMaintenance', DateType::class, array('widget' => 'single_text'))
         ->add('kilometres')
-        ->add('couleur')
-        ->add('premiereImmat', DateType::class, array('widget' => 'single_text'))
-        // ->add('user')
         ->add('save', SubmitType::class, array('attr' => array('class' => 'waves-effect waves-light btn')));
     }
 
     /**
-     * {@inheritdoc}
-     */
+    * {@inheritdoc}
+    */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Car'
+            'data_class' => 'AppBundle\Entity\Maintenance'
         ));
     }
 
     /**
-     * {@inheritdoc}
-     */
+    * {@inheritdoc}
+    */
     public function getBlockPrefix()
     {
-        return 'appbundle_car';
+        return 'appbundle_maintenance';
     }
 
 
