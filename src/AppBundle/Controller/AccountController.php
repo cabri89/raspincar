@@ -102,7 +102,7 @@ class AccountController extends Controller
         if (!$this->isCsrfTokenValid('DELETE_CAR_TOKEN', $token)) {
             throw $this->createAccessDeniedException('Invalid token');
         }
-
+		
         $em = $this->getDoctrine()->getManager();
 
         $em->remove($car);
