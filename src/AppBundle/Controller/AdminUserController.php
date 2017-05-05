@@ -18,7 +18,7 @@ class AdminUserController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $users = $em->getRepository(User::class)->findBy([], ['username' => 'asc']);
+        $users = $em->getRepository(User::class)->findBy(['roles' => 'ROLE_USER'], ['username' => 'asc']);
 
         return $this->render('AppBundle:AdminUser:index.html.twig', [
                 'users' => $users,

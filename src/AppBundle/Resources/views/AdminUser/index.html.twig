@@ -1,20 +1,41 @@
 {% extends '@App/base.html.twig' %}
 
+{% block title %}Administrateur{% endblock %}
+
 {% block body %}
     <h1>Utilisateur</h1>
-    <table class="table table-condensed table-bordered table-hover">
+    <table class="responsive-table">
         <thead>
             <tr>
                 <th class="sm">ID</th>
                 <th>Username</th>
+                <th>Email</th>
+                <th>Compte Actif ?</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
-                <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                </tr>
+				<tr>
+					<td>{{ user.id }}</td>
+					<td>{{ user.username }}</td>
+					<td>{{ user.email }}</td>
+					<td>{{ user.isActive }}</td>
+					<td>
+						<a class="waves-effect waves-light btn" href="#modal{{ user.id }}"><i class="medium material-icons">mode_edit</i></a>
+						<a class="waves-effect waves-light btn" href="#modal{{ user.id }}" onclick="$('#modal{{ user.id }}').modal()"><i class="medium material-icons">delete</i></a>
+
+						<div id="modal{{ user.id }}" class="modal">
+							<div class="modal-content">
+								<h4>Suppression de l'utilisateur</h4>
+								<p>Êtes-vous sûr de vouloir supprimer l'utilisateur <span class="blue-text">{{ user.username }}</span></p>
+							</div>
+							<div class="modal-footer">
+								<a href="#!" class="modal-action modal-close waves-effect waves-gray btn-flat red-text">Annuler</a>
+								<a href="#!" class="modal-action modal-close waves-effect waves-gray btn-flat blue-text">Supprimer</a>
+							</div>
+						</div>
+					</td>
+				</tr>
             {% else %}
                 <tr>
                     <td colspan="100%">
