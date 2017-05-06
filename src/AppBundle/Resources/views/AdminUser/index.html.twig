@@ -21,18 +21,29 @@
 					<td>{{ user.id }}</td>
 					<td>{{ user.username }}</td>
 					<td>{{ user.email }}</td>
-					<th><a class="waves-effect waves-light btn" href=""><i class="medium material-icons">settings</i></a></th>
+					<td>
+					<ul id="dropdown1" class="dropdown-content">
+				 		{% for car in user.cars %}
+							<li><a href="{{ path('app_account_carupdate', {id:car.id}) }}">{{car}}</a></li>
+						{% endfor %}
+					</ul>
+					<a class='dropdown-button btn' href='#' data-activates='dropdown1'><i class="medium material-icons">settings</i></a>
+					
+					</td>
 					<td>
 						<a class="waves-effect waves-light btn" href="#modal_edit_{{ user.id }}" onclick="$('#modal_edit_{{ user.id }}').modal()"><i class="medium material-icons">mode_edit</i></a>
 						
 						<div id="modal_edit_{{ user.id }}" class="modal">
 							<div class="modal-content">
 								<h4>Modification de l'utilisateur</h4>
-								<p></p>
+								{{ form_start(edituserForm) }}
+								{{ form_widget(edituserForm) }}
+								{{ form_widget(edituserForm.save) }}
+								{{ form_end(edituserForm) }}
 							</div>
 							<div class="modal-footer">
 								<a href="#!" class="modal-action modal-close waves-effect waves-gray btn-flat red-text">Annuler</a>
-								<button type="submit" class="modal-action modal-close waves-effect waves-gray btn-flat blue-text">Modifier</button>
+								<!--a href="{{ path('app_adminuser_edituser',{id:user.id}) }}" class="modal-action modal-close waves-effect waves-gray btn-flat blue-text">Modifier</a-->
 							</div>
 						</div>
 					</td>
@@ -69,7 +80,7 @@
 							</div>
 						</div>
 					</td>
-				</tr>
+           </tr>
             {% else %}
                 <tr>
                     <td colspan="100%">
@@ -81,4 +92,10 @@
             {% endfor %}
         </tbody>
     </table>
+    
+    <script>
+		$(document).ready(function() {
+			$(".dropdown-button").dropdown();
+	  	});
+	</script>
 {% endblock %}

@@ -71,8 +71,14 @@ class AccountController extends Controller
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('warning', 'Voiture modifié avec succès !');
+			
+			
+			if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+  				return $this->redirectToRoute('app_adminuser_index');
 
-            return $this->redirectToRoute('app_account_index');
+			}else{
+				return $this->redirectToRoute('app_account_index');
+			}
         }
 
         return  $this->render('AppBundle:Account:carUpdate.html.twig', [

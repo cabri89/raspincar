@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\User;
+use AppBundle\Form\EditUserType;
 
 /**
 * @Route("/admin/user")
@@ -45,8 +46,33 @@ class AdminUserController extends Controller
 		$em->persist($user);
         $em->flush();
 
-        $this->addFlash('Success', 'Voiture supprimé avec succès !');
+        $this->addFlash('Success', 'Voiture modifié avec succès !');
 
         return $this->redirectToRoute('app_adminuser_index');
+	}
+	
+	/**
+    * @Route("/{id}/useredit", requirements={"id":"\d+"})
+    * @Method("GET|POST")
+    */
+	public function edituserAction(Request $request, User $user)
+	{
+        $edituserForm = $this->createForm(EditUserForm::class, $user);
+
+        $edituserForm->handleRequest($request);
+
+        if ($edituserForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('Success', 'Utilisateur modifié avec succès !');
+			
+			
+			return $this->redirectToRoute('app_adminuser_index');
+        }
+
+        return  $this->render('AppBundle:AdminUser:index.html.twig', [
+            'user' => $user,
+            'edituserForm' => $edituserForm->createView()
+        ]);
 	}
 }
