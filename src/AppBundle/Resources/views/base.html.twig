@@ -6,30 +6,37 @@
    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
    <link href="{{ asset('bundles/framework/css/materialize.min.css') }}" rel="stylesheet">
+   <link href="{{ asset('bundles/framework/css/custom.css') }}" rel="stylesheet">
    {% block head %}
 
    {% endblock %}
 </head>
 <body>
-   <div class="container">
-   {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-   <li role="presentation">
-      <a href="{{ path('logout') }}">Déconnexion</a>
-   </li>
-   {% endif %}
-   {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
-   <li role="presentation" class="">
-      <a href="{{ path('app_security_login') }}">Connexion</a>
-   </li>
-   <li role="presentation" class="">
-      <a href="{{ path('app_registration_register') }}">Inscription</a>
-   </li>
-
-   {% endif %}
-   {% block body %}
-   {% endblock %}
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">Logo</a>
+      <ul class="right hide-on-med-and-down">
+         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+         <li role="presentation">
+            <a href="{{ path('logout') }}">Déconnexion</a>
+         </li>
+         {% endif %}
+         {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
+         <li role="presentation" class="">
+            <a href="{{ path('app_security_login') }}">Connexion</a>
+         </li>
+         <li role="presentation" class="">
+            <a href="{{ path('app_registration_register') }}">Inscription</a>
+         </li>
+      </ul>
 
    </div>
+         {% endif %}
+   
+  </nav>
+         {% block body %}
+         {% endblock %}
+
    <script src="{{ asset('bundles/framework/js/materialize.min.js') }}"></script>
 </body>
 </html>

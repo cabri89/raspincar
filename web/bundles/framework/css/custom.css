@@ -1,0 +1,13 @@
+.login-form, .register-form{
+	width: 80%;
+	position: relative;
+	margin: auto;
+	max-width: 400px;
+	height: 250px;
+	margin-top: 10%;
+}
+
+.login-form button[type="submit"]{
+	position: relative;
+	margin: auto;
+}
