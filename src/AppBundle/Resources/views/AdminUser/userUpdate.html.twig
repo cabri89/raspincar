@@ -1,0 +1,10 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+
+{{ form_start(edituserForm) }}
+{{ form_widget(edituserForm) }}
+<button type="submit" class="waves-effect waves-light btn">S'inscrire</button>
+{{ form_end(edituserForm) }}
+
+{% endblock %}

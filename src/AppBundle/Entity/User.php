@@ -39,7 +39,6 @@ class User implements UserInterface
     */
     private $isActive;
     /**
-    * @Assert\NotBlank()
     * @Assert\Length(max=4096)
     */
     private $plainPassword;
