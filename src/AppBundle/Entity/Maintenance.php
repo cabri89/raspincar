@@ -33,6 +33,23 @@ class Maintenance
     private $kilometres;
 
     /**
+    * @ORM\Column(type="date", length=255, unique=false)
+    * @Assert\NotBlank()
+    * @Assert\Date()
+    */
+    private $dateNotif;
+
+    /**
+    * @ORM\Column(type="integer", length=255, unique=false)
+    */
+    private $kilometresNotif;
+
+    /**
+    * @ORM\Column(type="float", length=255, unique=false)
+    */
+    private $prix;
+
+    /**
     * @ORM\ManyToOne(targetEntity="Car", inversedBy="maintenances")
     */
     private $car;
@@ -136,5 +153,77 @@ class Maintenance
     public function __toString()
     {
         return $this->getType().' '.$this->getDateMaintenance();
+    }
+
+    /**
+     * Set dateNotif
+     *
+     * @param \DateTime $dateNotif
+     *
+     * @return Maintenance
+     */
+    public function setDateNotif($dateNotif)
+    {
+        $this->dateNotif = $dateNotif;
+
+        return $this;
+    }
+
+    /**
+     * Get dateNotif
+     *
+     * @return \DateTime
+     */
+    public function getDateNotif()
+    {
+        return $this->dateNotif;
+    }
+
+    /**
+     * Set kilometresNotif
+     *
+     * @param integer $kilometresNotif
+     *
+     * @return Maintenance
+     */
+    public function setKilometresNotif($kilometresNotif)
+    {
+        $this->kilometresNotif = $kilometresNotif;
+
+        return $this;
+    }
+
+    /**
+     * Get kilometresNotif
+     *
+     * @return integer
+     */
+    public function getKilometresNotif()
+    {
+        return $this->kilometresNotif;
+    }
+
+    /**
+     * Set prix
+     *
+     * @param float $prix
+     *
+     * @return Maintenance
+     */
+    public function setPrix($prix)
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    /**
+     * Get prix
+     *
+     * @return float
+     */
+    public function getPrix()
+    {
+        return $this->prix;
     }
 }

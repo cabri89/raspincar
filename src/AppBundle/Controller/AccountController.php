@@ -24,6 +24,10 @@ class AccountController extends Controller
     */
     public function indexAction(Request $request)
     {
+        if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+            return $this->redirectToRoute('app_adminuser_index');
+        }
+
         $user = $this->get('security.context')->getToken()->getUser();
         $cars = $user->getCars();
 

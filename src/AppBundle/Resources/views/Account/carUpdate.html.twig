@@ -25,6 +25,9 @@
             <th>Description</th>
             <th>Date</th>
             <th>Kilomètres du véhicule</th>
+            <th>Date de la notif</th>
+            <th>Kilomètres de la notif</th>
+            <th>Prix de la maintenance</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -35,6 +38,9 @@
             <td>{{maintenance.type}}</td>
             <td>{{maintenance.dateMaintenance|date("m/d/Y")}}</td>
             <td>{{maintenance.kilometres}}</td>
+            <td>{{maintenance.dateNotif|date("m/d/Y")}}</td>
+            <td>{{maintenance.kilometresNotif}}</td>
+            <td>{{maintenance.prix}}</td>
             <td>
                 <a href="{{ path('app_account_maintenancedelete',{id : maintenance.id, idCar : car.id, _token : _token}) }}" class="">
                     <span>Supprimer</span>

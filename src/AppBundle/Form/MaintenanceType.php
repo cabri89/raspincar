@@ -16,9 +16,12 @@ class MaintenanceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('type','textarea')
+        ->add('type','textarea', array('attr' => array('class' => 'materialize-textarea')))
         ->add('dateMaintenance', DateType::class, array('widget' => 'single_text'))
         ->add('kilometres')
+        ->add('dateNotif', DateType::class, array('widget' => 'single_text'))
+        ->add('kilometresNotif')
+        ->add('prix')
         ->add('save', SubmitType::class, array('attr' => array('class' => 'waves-effect waves-light btn')));
     }
 

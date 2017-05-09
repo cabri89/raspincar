@@ -19,7 +19,23 @@ Mes voitures :
 {% endfor %}
 </ul>
 
-{{ form_start(formCar) }}
-{{ form_end(formCar) }}
+<a class="modal-trigger waves-effect waves-light btn" href="#updateCar">Ajouter un véhicule</a>
+<!-- Modal Structure -->
+<div id="updateCar" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h4>Ajouter un véhicule</h4>
+        {{ form_start(formCar) }}
+        {{ form_end(formCar) }}
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Fermer</a>
+    </div>
+</div>
 
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.modal').modal();
+});
+</script>
 {% endblock %}
