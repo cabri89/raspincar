@@ -52,27 +52,26 @@ class AdminUserController extends Controller
 	}
 	
 	/**
-    * @Route("/{id}/useredit", requirements={"id":"\d+"})
+    * @Route("/{id}/edit", requirements={"id":"\d+"})
     * @Method("GET|POST")
     */
 	public function edituserAction(Request $request, User $user)
 	{
-        $edituserForm = $this->createForm(EditUserForm::class, $user);
+        $edituserForm = $this->createForm(EditUserType::class, $user);
 
         $edituserForm->handleRequest($request);
 
         if ($edituserForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('Success', 'Utilisateur modifié avec succès !');
+            $this->addFlash('warning', 'Voiture modifié avec succès !');
 			
-			
-			return $this->redirectToRoute('app_adminuser_index');
+            return $this->redirectToRoute('app_adminuser_edituser', array('id' => $cuser->getId()));
         }
 
         return  $this->render('AppBundle:AdminUser:index.html.twig', [
             'user' => $user,
-            'edituserForm' => $edituserForm->createView()
+            'edituserForm' => $edituserForm->createView(),
         ]);
 	}
 }

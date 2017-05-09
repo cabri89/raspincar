@@ -22,12 +22,12 @@
 					<td>{{ user.username }}</td>
 					<td>{{ user.email }}</td>
 					<td>
-					<ul id="dropdown1" class="dropdown-content">
+					<ul id="dropdown_vehicule_{{ user.id }}" class="dropdown-content">
 				 		{% for car in user.cars %}
 							<li><a href="{{ path('app_account_carupdate', {id:car.id}) }}">{{car}}</a></li>
 						{% endfor %}
 					</ul>
-					<a class='dropdown-button btn' href='#' data-activates='dropdown1'><i class="medium material-icons">settings</i></a>
+					<a class='dropdown-button btn' href='#' data-activates='dropdown_vehicule_{{ user.id }}' onclick="$('#dropdown_vehicule_{{ user.id }}').dropdown()"><i class="medium material-icons">settings</i></a>
 					
 					</td>
 					<td>
@@ -36,10 +36,7 @@
 						<div id="modal_edit_{{ user.id }}" class="modal">
 							<div class="modal-content">
 								<h4>Modification de l'utilisateur</h4>
-								{{ form_start(edituserForm) }}
-								{{ form_widget(edituserForm) }}
-								{{ form_widget(edituserForm.save) }}
-								{{ form_end(edituserForm) }}
+								
 							</div>
 							<div class="modal-footer">
 								<a href="#!" class="modal-action modal-close waves-effect waves-gray btn-flat red-text">Annuler</a>
