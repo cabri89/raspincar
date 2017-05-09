@@ -9,11 +9,15 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
-     */
+    * @Route("/")
+    */
     public function indexAction(Request $request)
     {
-        // replace this example code with whatever you need
-        return $this->render('AppBundle:Default:index.html.twig');
+        $securityContext = $this->container->get('security.authorization_checker');
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            return $this->redirectToRoute('app_account_index');
+        }else {
+            return $this->redirectToRoute('app_security_login');
+        }
     }
 }
