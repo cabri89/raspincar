@@ -4,7 +4,9 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\User;
+use AppBundle\Form\UserType;
 
 /**
 * @Route("/admin/user")
@@ -21,7 +23,57 @@ class AdminUserController extends Controller
         $users = $em->getRepository(User::class)->findBy(['roles' => 'ROLE_USER'], ['username' => 'asc']);
 
         return $this->render('AppBundle:AdminUser:index.html.twig', [
-                'users' => $users,
-             ]);
+			    'users' => $users,
+		    ]);
     }
+
+	/**
+    * @Route("/{id}/usertoggle", requirements={"id":"\d+"})
+    * @Method("GET|POST")
+    */
+	public function toggleuserAction(Request $request, User $user)
+	{
+        if (null === $token = $request->query->get('_token')) {
+            throw $this->createAccessDeniedException('Token missing');
+        }
+
+        if (!$this->isCsrfTokenValid('TOGGLE_USER_TOKEN', $token)) {
+            throw $this->createAccessDeniedException('Invalid token');
+        }
+
+        $em = $this->getDoctrine()->getManager();
+    		$user->setIsActive(!$user->getIsActive());
+    		$em->persist($user);
+        $em->flush();
+
+        $this->addFlash('Success', 'Voiture modifié avec succès !');
+
+        return $this->redirectToRoute('app_adminuser_index');
+	}
+
+	/**
+    * @Route("/{id}/userupdate", requirements={"id":"\d+"})
+    * @Method("GET|POST")
+    */
+	public function updateUserAction(Request $request, User $user)
+	{
+        $edituserForm = $this->createForm(UserType::class, $user);
+
+        $edituserForm->remove('plainPassword');
+
+        $edituserForm->handleRequest($request);
+
+        if ($edituserForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Utilisateur modifié avec succès !');
+
+            return $this->redirectToRoute('app_adminuser_index');
+        }
+
+        return  $this->render('AppBundle:AdminUser:userUpdate.html.twig', [
+            'user' => $user,
+            'edituserForm' => $edituserForm->createView(),
+        ]);
+	}
 }
