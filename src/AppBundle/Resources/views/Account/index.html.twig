@@ -4,20 +4,34 @@
 
 {% block body %}
 {% set _token = csrf_token('DELETE_CAR_TOKEN') %}
-Mes voitures :
-<ul>
-{% for car in cars %}
-<li>
-    {{ car }}
-    <a href="{{ path('app_account_carupdate',{id :car.id}) }}" class="">
-        <span>Voir</span>
-    </a>
-    <a href="{{ path('app_account_cardelete',{id : car.id,_token:_token}) }}" class="">
-        <span>Supprimer</span>
-    </a>
-</li>
-{% endfor %}
-</ul>
+<h3>Mes véhicules</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Marque</th>
+            <th>Modèle</th>
+            <th>Première immatriculation</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for car in cars %}
+        <tr>
+            <td>{{car.marque}}</td>
+            <td>{{car.modele}}</td>
+            <td>{{car.premiereImmat|date("m/d/Y")}}</td>
+            <td>
+                <a href="{{ path('app_account_carupdate',{id :car.id}) }}" class="">
+                    <span>Voir</span>
+                </a>
+                <a href="{{ path('app_account_cardelete',{id : car.id,_token:_token}) }}" class="">
+                    <span>Supprimer</span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 <a class="modal-trigger waves-effect waves-light btn" href="#updateCar">Ajouter un véhicule</a>
 <!-- Modal Structure -->

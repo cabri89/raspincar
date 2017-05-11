@@ -1,7 +1,7 @@
 {% extends '@App/base.html.twig' %}
 
 {% block body %}
-<h1>{{car}}</h1>
+<h3>{{car}}</h3>
 <a class="modal-trigger waves-effect waves-light btn" href="#updateCar">Modifier la voiture</a>
 <!-- Modal Structure -->
 <div id="updateCar" class="modal modal-fixed-footer">
@@ -16,9 +16,7 @@
     </div>
 </div>
 
-<h3>Carnet d'entretien</h3>
-<a class="modal-trigger waves-effect waves-light btn" href="#addMaintenance">Ajouter un entretien</a>
-
+<h4>Carnet d'entretien</h4>
 <table>
     <thead>
         <tr>
@@ -50,6 +48,8 @@
         {% endfor %}
     </tbody>
 </table>
+<a class="modal-trigger waves-effect waves-light btn" href="#addMaintenance">Ajouter un entretien</a>
+
 
 <!-- Modal Structure -->
 <div id="addMaintenance" class="modal modal-fixed-footer">
@@ -64,6 +64,91 @@
         <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Fermer</a>
     </div>
 </div>
+<div class="row">
+    <h4>Géolocalisation</h4>
+     <div class="col s12"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2622.995428914915!2d2.1519628511994995!3d48.89642427918962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e663066079420d%3A0x8f1d93d4bfae1f67!2s9+Rue+Beaugendre%2C+78400+Chatou!5e0!3m2!1sfr!2sfr!4v1494419521273" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe></div>
+     <div class="col s6"><canvas id="myChart"></canvas></div>
+     <div class="col s6"><canvas id="myChart1"></canvas></div>
+   </div>
+<script>
+var ctx = document.getElementById("myChart");
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ["Decembre", "Janvier", "Fevrier", "Mars", "Avril", "Mai"],
+        datasets: [{
+            label: 'Litres 100/km',
+            data: [12, 9, 8.6, 5, 6, 7],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+
+var ctx = document.getElementById("myChart1");
+var myChart1 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ["Decembre", "Janvier", "Fevrier", "Mars", "Avril", "Mai"],
+        datasets: [{
+            label: '€',
+            data: [120, 190, 30, 50, 20, 30],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
 <script type="text/javascript">
 $(document).ready(function(){
     $('.modal').modal();

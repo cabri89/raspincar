@@ -7,6 +7,7 @@
    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
    <link href="{{ asset('css/materialize.min.css') }}" rel="stylesheet">
    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+   <script src="{{ asset('js/Chart.min.js') }}"></script>
    {% block head %}
 
    {% endblock %}
@@ -34,9 +35,12 @@
          {% endif %}
 
   </nav>
+  <div class="container">
+        <!-- Page Content goes here -->
          {% block body %}
          {% endblock %}
+     </div>
 
-   <script src="{{ asset('js/materialize.min.js') }}"></script>
+         <script src="{{ asset('js/materialize.min.js') }}"></script>
 </body>
 </html>
