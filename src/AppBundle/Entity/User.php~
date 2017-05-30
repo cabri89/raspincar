@@ -203,42 +203,4 @@ class User implements UserInterface
     {
         return $this->getUsername();
     }
-
-    /**
-     * Set uuid
-     *
-     * @param guid $uuid
-     *
-     * @return User
-     */
-    public function setUuid($uuid)
-    {
-        $this->uuid = uniqid();
-
-        return $this;
-    }
-
-    /**
-     * Get uuid
-     *
-     * @return guid
-     */
-    public function getUuid()
-    {
-        return $this->uuid;
-    }
-
-    /**
-     * Set roles
-     *
-     * @param string $roles
-     *
-     * @return User
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
 }

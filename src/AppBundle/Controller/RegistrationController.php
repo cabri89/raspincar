@@ -19,7 +19,7 @@ class RegistrationController extends Controller
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->redirectToRoute('app_account_index');
         }
-        
+
         // 1) build the form
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -32,6 +32,7 @@ class RegistrationController extends Controller
             $password = $this->get('security.password_encoder')
             ->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
+            $user->setUuid();
             $user->setRole('ROLE_USER');
             $user->setIsActive(1);
 
