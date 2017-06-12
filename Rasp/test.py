@@ -1,21 +1,14 @@
 import serial
 import requests
-import time
+import uuid
 
-jsonSend = []
 carUid = "5911af30596e8";
 userUid = "5911af30596e8";
-ser = serial.Serial('/dev/ttyACM0',9600)
-i = 0
+ser = serial.Serial('/dev/ttyACM0',9600, timeout = 1)
+statUid = uuid.uuid4();
 
 while True:
-	i +=1
-	temp = ser.readline()
-	jsonSend.append("{temp : " + temp.rstrip() + " }")
-
-	time.sleep(1)
-
-	if i == 5 :
-		r = requests.post('http://raspincarapi.azurewebsites.net/car/' + carUid + '/' + userUid, data={'temps': jsonSend})
-		jsonSend = []
-		i = 0
+	sensors = ser.readline()
+	if sensors != "":
+		print sensors
+		# r = requests.post('http://raspincarapi.azurewebsites.net/car/' + carUid + '/' + userUid + '/' + statUid, data={'sensors': sensors})

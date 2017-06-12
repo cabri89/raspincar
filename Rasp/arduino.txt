@@ -4,13 +4,18 @@
 #include <DallasTemperature.h>
 #include <ArduinoJson.h>
 
-long lat,lon; // create variable for latitude and longitude object
-unsigned long fix_age, time, date, speed, course;
+float lat,lon; // create variable for latitude and longitude object
+unsigned long fix_age;
+
 #define DATA_PIN 2
 #define SENSOR_RESOLUTION 9
 #define SENSOR_INDEX 0
+
+int i = 0;
+
 StaticJsonBuffer<200> jsonBuffer;
 JsonObject& root = jsonBuffer.createObject();
+JsonObject& ret = jsonBuffer.createObject();
 
 SoftwareSerial gpsSerial(3, 4); // create gps sensor connection
 TinyGPS gps; // create gps object
@@ -29,15 +34,23 @@ void setup(){
 void loop(){
     while(gpsSerial.available()){ // check for gps data
         if(gps.encode(gpsSerial.read())){ // encode gps data
-            gps.get_position(&lat,&lon); // get latitude and longitude
+            //gps.get_position(&lat,&lon); // get latitude and longitude
+            gps.f_get_position(&lat, &lon, &fix_age);
             sensors.requestTemperatures();
             float temperatureInCelsius = sensors.getTempCByIndex(SENSOR_INDEX);
+            
             root["lat"] = lat;
             root["lon"] = lon;
             root["temp"] = temperatureInCelsius;
-            root.printTo(Serial);
             
+            ret[String(i)] = root;
+            i++;
+            
+            if(i == 5){
+              ret.printTo(Serial);  
+              i = 0;  
+              Serial.println(' ');
+              }         
         }
     }
-    
 }
