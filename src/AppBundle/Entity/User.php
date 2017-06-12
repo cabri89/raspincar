@@ -211,7 +211,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setUuid($uuid)
+    public function setUuid()
     {
         $this->uuid = uniqid();
 

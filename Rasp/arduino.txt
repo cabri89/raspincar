@@ -1,0 +1,43 @@
+#include <SoftwareSerial.h>
+#include <TinyGPS.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <ArduinoJson.h>
+
+long lat,lon; // create variable for latitude and longitude object
+unsigned long fix_age, time, date, speed, course;
+#define DATA_PIN 2
+#define SENSOR_RESOLUTION 9
+#define SENSOR_INDEX 0
+StaticJsonBuffer<200> jsonBuffer;
+JsonObject& root = jsonBuffer.createObject();
+
+SoftwareSerial gpsSerial(3, 4); // create gps sensor connection
+TinyGPS gps; // create gps object
+OneWire oneWire(DATA_PIN);
+DallasTemperature sensors(&oneWire);
+DeviceAddress sensorDeviceAddress;
+
+void setup(){
+    Serial.begin(9600); // connect serial
+    gpsSerial.begin(9600); // connect gps sensor
+    sensors.begin();
+    sensors.getAddress(sensorDeviceAddress, 0);
+    sensors.setResolution(sensorDeviceAddress, SENSOR_RESOLUTION);
+}
+
+void loop(){
+    while(gpsSerial.available()){ // check for gps data
+        if(gps.encode(gpsSerial.read())){ // encode gps data
+            gps.get_position(&lat,&lon); // get latitude and longitude
+            sensors.requestTemperatures();
+            float temperatureInCelsius = sensors.getTempCByIndex(SENSOR_INDEX);
+            root["lat"] = lat;
+            root["lon"] = lon;
+            root["temp"] = temperatureInCelsius;
+            root.printTo(Serial);
+            
+        }
+    }
+    
+}

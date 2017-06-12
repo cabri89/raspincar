@@ -3,7 +3,8 @@ import requests
 import time
 
 jsonSend = []
-
+carUid = "5911af30596e8";
+userUid = "5911af30596e8";
 ser = serial.Serial('/dev/ttyACM0',9600)
 i = 0
 
@@ -15,6 +16,6 @@ while True:
 	time.sleep(1)
 
 	if i == 5 :
-		response = jsonSend
-		r = requests.post('https://lepetitdev.herokuapp.com/api', data={'uuid' : '5911af30596e8', 'temps': response})
+		r = requests.post('http://raspincarapi.azurewebsites.net/car/' + carUid + '/' + userUid, data={'temps': jsonSend})
+		jsonSend = []
 		i = 0
