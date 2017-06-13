@@ -50,7 +50,6 @@
 </table>
 <a class="modal-trigger waves-effect waves-light btn" href="#addMaintenance">Ajouter un entretien</a>
 
-
 <!-- Modal Structure -->
 <div id="addMaintenance" class="modal modal-fixed-footer">
     <div class="modal-content">
@@ -70,8 +69,38 @@
      <div class="col s12"><canvas id="myChart"></canvas></div>
      <!-- <div class="col s6"><canvas id="myChart1"></canvas></div> -->
    </div>
+
+   <h4>Historique</h4>
+   <table>
+       <thead>
+           <tr>
+               <th>Date</th>
+               <th>Identifiant</th>
+               <th>Action</th>
+           </tr>
+       </thead>
+       <tbody>
+           {% for stat in car.stats %}
+           <tr>
+               <td>{{stat.date|date("m/d/Y")}}</td>
+               <td>{{stat.uuid}}</td>
+               <td>
+                   <a href="{{ path('app_account_statdetail',{id : stat.id}) }}" class="">
+                       <span>Voir</span>
+                   </a>
+               </td>
+           </tr>
+           {% endfor %}
+       </tbody>
+   </table>
    <script>
-    var raspData = [{"lat":48.896343,"lon":2.154412,"temp":20},{"lat":48.897443,"lon":2.154412,"temp":24},{"lat":48.897543,"lon":2.154412,"temp":26},{"lat":48.896643,"lon":2.158412,"temp":21},{"lat":48.899743,"lon":2.154412,"temp":34}];
+
+   {% if car.stats|length == 0 %}
+       var raspData = [{"lat":48.896343,"lon":2.154412,"temp":20},{"lat":48.897443,"lon":2.154412,"temp":24},{"lat":48.897543,"lon":2.154412,"temp":26},{"lat":48.896643,"lon":2.158412,"temp":21},{"lat":48.899743,"lon":2.154412,"temp":34}];
+   {% else %}
+       var raspData = {{car.stats[car.stats|length-1].value|raw}};
+   {% endif %}
+
     var temperature = [];
     var labels = [];
     for (var i = 0; i < raspData.length; i++) {
@@ -126,21 +155,21 @@
     }
 
     function initMap() {
-        google.maps.LatLng.prototype.kmTo = function(a){ 
-            var e = Math, ra = e.PI/180; 
-            var b = this.lat() * ra, c = a.lat() * ra, d = b - c; 
-            var g = this.lng() * ra - a.lng() * ra; 
-            var f = 2 * e.asin(e.sqrt(e.pow(e.sin(d/2), 2) + e.cos(b) * e.cos 
-                (c) * e.pow(e.sin(g/2), 2))); 
-            return f * 6378.137; 
+        google.maps.LatLng.prototype.kmTo = function(a){
+            var e = Math, ra = e.PI/180;
+            var b = this.lat() * ra, c = a.lat() * ra, d = b - c;
+            var g = this.lng() * ra - a.lng() * ra;
+            var f = 2 * e.asin(e.sqrt(e.pow(e.sin(d/2), 2) + e.cos(b) * e.cos
+                (c) * e.pow(e.sin(g/2), 2)));
+            return f * 6378.137;
         }
 
-        google.maps.Polyline.prototype.inKm = function(n){ 
-            var a = this.getPath(n), len = a.getLength(), dist = 0; 
-            for (var i=0; i < len-1; i++) { 
-               dist += a.getAt(i).kmTo(a.getAt(i+1)); 
+        google.maps.Polyline.prototype.inKm = function(n){
+            var a = this.getPath(n), len = a.getLength(), dist = 0;
+            for (var i=0; i < len-1; i++) {
+               dist += a.getAt(i).kmTo(a.getAt(i+1));
            }
-           return dist; 
+           return dist;
        }
        var title = document.getElementById("titleTrajet");
        var map = new google.maps.Map(document.getElementById('map'), {

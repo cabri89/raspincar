@@ -1,0 +1,91 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+
+<div class="row">
+  <h4 id="titleTrajet">Géolocalisation</h4>
+  <div class="col s12" id="map" style="height:250px;"></div>
+  <div class="col s12"><canvas id="myChart"></canvas></div>
+</div>
+<script>
+ var raspData = {{stat.value|raw}};
+   var temperature = [];
+  var labels = [];
+  for (var i = 0; i < raspData.length; i++) {
+    temperature[i] = raspData[i].temp;
+    labels[i] = "";
+  }
+  var ctx = document.getElementById("myChart");
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Température (C°)',
+        data: temperature,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor:"rgba(255,99,132,1)",
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero:true
+          }
+        }]
+      }
+    }
+  });
+
+  var coord = [];
+  for (var i = 0; i < raspData.length; i++) {
+    coord[i] = {};
+    coord[i].lat = raspData[i].lat;
+    coord[i].lng = raspData[i].lon;
+  }
+
+  function initMap() {
+    google.maps.LatLng.prototype.kmTo = function(a){
+      var e = Math, ra = e.PI/180;
+      var b = this.lat() * ra, c = a.lat() * ra, d = b - c;
+      var g = this.lng() * ra - a.lng() * ra;
+      var f = 2 * e.asin(e.sqrt(e.pow(e.sin(d/2), 2) + e.cos(b) * e.cos
+        (c) * e.pow(e.sin(g/2), 2)));
+      return f * 6378.137;
+    }
+
+    google.maps.Polyline.prototype.inKm = function(n){
+      var a = this.getPath(n), len = a.getLength(), dist = 0;
+      for (var i=0; i < len-1; i++) {
+       dist += a.getAt(i).kmTo(a.getAt(i+1));
+     }
+     return dist;
+   }
+   var title = document.getElementById("titleTrajet");
+   var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 14,
+    center: coord[0],
+    mapTypeId: 'roadmap'
+  });
+
+
+   var flightPath = new google.maps.Polyline({
+    path: coord,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+  });
+   var distance = flightPath.inKm()
+   title.innerText = "Dernier trajet (" + distance.toFixed(3) + "km)";
+   flightPath.setMap(map);
+ }
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAui7r1lhPpk5Jc1nG4-59Kw1U5X2rdkkY&callback=initMap">
+</script>
+{% endblock %}

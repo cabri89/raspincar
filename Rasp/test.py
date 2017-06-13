@@ -2,7 +2,7 @@ import serial
 import requests
 import uuid
 
-carUid = "5911af30596e8";
+carUid = "594057f143e77";
 userUid = "5911af30596e8";
 ser = serial.Serial('/dev/ttyACM0',9600, timeout = 1)
 statUid = uuid.uuid4();

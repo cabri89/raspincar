@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Car;
+use AppBundle\Entity\Stat;
 use AppBundle\Entity\Maintenance;
 use AppBundle\Form\CarType;
 use AppBundle\Form\MaintenanceType;
@@ -54,6 +55,18 @@ class AccountController extends Controller
     }
 
     /**
+    * @Route("/{id}/stat", requirements={"id":"\d+"})
+    * @Method("GET")
+    */
+    public function statdetailAction(Request $request, Stat $stat)
+    {
+
+        return  $this->render('AppBundle:Account:statDetail.html.twig', [
+            'stat' => $stat
+        ]);
+    }
+
+    /**
     * Update
     *
     * @param Request $request Request
@@ -66,6 +79,7 @@ class AccountController extends Controller
     */
     public function carupdateAction(Request $request, Car $car)
     {
+
         $maintenance = new Maintenance();
         $maintenanceForm = $this->createForm(MaintenanceType::class, $maintenance);
 
