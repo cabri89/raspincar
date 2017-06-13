@@ -3,83 +3,170 @@
 {% block title %}Administrateur{% endblock %}
 
 {% block body %}
-    <h1>Utilisateur</h1>
-    <table class="responsive-table ">
-        <thead>
-            <tr>
-                <th class="sm">ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Véhicules</th>
-                <th>Modifier</th>
-                <th>Compte Actif ?</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-				<tr>
-					<td>{{ user.id }}</td>
-					<td>{{ user.username }}</td>
-					<td>{{ user.email }}</td>
-					<td>
-					<ul id="dropdown_vehicule_{{ user.id }}" class="dropdown-content">
-				 		{% for car in user.cars %}
-							<li><a href="{{ path('app_account_carupdate', {id:car.id}) }}">{{car}}</a></li>
-						{% endfor %}
-					</ul>
-					<a class='dropdown-button btn' href='#' data-activates='dropdown_vehicule_{{ user.id }}' onclick="$('#dropdown_vehicule_{{ user.id }}').dropdown()"><i class="medium material-icons">settings</i></a>
+    <h1>Statistique</h1>
 
-					</td>
-					<td><a class="waves-effect waves-light btn" href="{{ path('app_adminuser_updateuser', {id:user.id}) }}"><i class="medium material-icons">mode_edit</i></a></td>
-					<td>
-						<a class="waves-effect waves-light btn" href="#modal_delete_{{ user.id }}" onclick="$('#modal_delete_{{ user.id }}').modal()">
-							<i class="medium material-icons">
-								{% if(user.isActive) %}
-									lock_open</i></a>
-								{% else %}
-									lock
-								{% endif %}
-							</i>
-						</a>
-						{% set _tokenToggleUser = csrf_token('TOGGLE_USER_TOKEN') %}
-						<div id="modal_delete_{{ user.id }}" class="modal">
-							<div class="modal-content">
-								{% if(user.isActive) %}
-									<h4>Désactiver l'utilisateur</h4>
-									<p>Êtes-vous sûr de vouloir désactiver l'utilisateur <span class="blue-text">{{ user.username }}</span></p>
-								{% else %}
-									<h4>Activer l'utilisateur</h4>
-									<p>Êtes-vous sûr de vouloir activer l'utilisateur <span class="blue-text">{{ user.username }}</span></p>
-								{% endif %}
-							</div>
-							<div class="modal-footer">
-								<a href="#!" class="modal-action modal-close waves-effect waves-gray btn-flat red-text">Annuler</a>
-								<a href="{{ path('app_adminuser_toggleuser',{id:user.id,_token:_tokenToggleUser}) }}" class="modal-action modal-close waves-effect waves-gray btn-flat blue-text">
-									{% if(user.isActive) %}
-										Désactiver
-									{% else %}
-										Activer
-									{% endif %}
-								</a>
-							</div>
-						</div>
-					</td>
-           </tr>
-            {% else %}
-                <tr>
-                    <td colspan="100%">
-                        <p class="alert alert-warning">
-                            Aucun utilisateur trouvé.
-                        </p>
-                    </td>
-                </tr>
+    <div class="row">
+      <div class="col s8">
+        <table class="responsive-table ">
+          <thead>
+              <tr>
+                  <th>
+                    <i class="material-icons">perm_identity</i>
+                    <span class='icon-text'>Total utilisteurs</span>
+                  </th>
+                  <th>
+                    <i class="material-icons">directions_car</i>
+                    <span class='icon-text'>Total véhicules</span>
+                  </th>
+                  <th>
+                    <i class="material-icons">build</i>
+                    <span class='icon-text'>Total maintenances</span>
+                  </th>
+              </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><h4>{{ users }}</h4></td>
+              <td><h4>{{ cars }}</h4></td>
+              <td><h4>{{ maintenances }}</h4></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="responsive-table ">
+          <thead>
+              <tr>
+                  <th>
+                    <i class="material-icons">perm_identity</i>
+                    <span class='icon-text'>Utilisateurs possédant le plus de véhicules</span>
+                  </th>
+                  <th>
+                    <i class="material-icons">directions_car</i>
+                    <span class='icon-text'>Nombre de véhicules possédées par l'utilisateur</span>
+                  </th>
+              </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><h5>{{ max_cars[0] }}</h5></td>
+              <td><h4>{{ max_cars[1] }}</h4></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="responsive-table ">
+          <thead>
+              <tr>
+                  <th>
+                    <i class="material-icons">directions_car</i>
+                    <span class='icon-text'>Véhicule possédant le plus de maintenances</span>
+                  </th>
+                  <th>
+                    <i class="material-icons">build</i>
+                    <span class='icon-text'>Nombre de maintenances faites sur le véhicule</span>
+                  </th>
+              </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td><h5>{{ max_maintenances[0] }} {{ max_maintenances[1] }} {{ max_maintenances[2] }} <br> {{ max_maintenances[3] }} {{ max_maintenances[4] }}km</h5></td>
+              <td><h4>{{ max_maintenances[5] }}</h4></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col s4 center-align">
+        <h3>Total</h3>
+        <canvas id="stats_all"></canvas>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col s7  ">
+        <table class="responsive-table ">
+          <thead>
+              <tr>
+                  <th>
+                    <i class="material-icons">directions_car</i>
+                    <span class='icon-text'>Marque</span>
+                  </th>
+                  <th>
+                    <span class='icon-text'>Nombre de véhicule de cette marque</span>
+                  </th>
+              </tr>
+          </thead>
+
+          <tbody>
+            {% for marque in nbmarque %}
+              <tr>
+                <td>{{ marque["marque"] }}</td>
+                <td>{{ marque["nb_marque"] }}</td>
+              </tr>
             {% endfor %}
-        </tbody>
-    </table>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col s5">
+        <h4>Top 3 Marque</h4>
+        <canvas id="stats_color"></canvas>
+      </div>
+    </div>
 
     <script>
-		$(document).ready(function() {
-			$(".dropdown-button").dropdown();
-	  	});
-	</script>
+      var ctx = document.getElementById("stats_all");
+      var stats_all = new Chart(ctx, {
+          type: 'pie',
+          data: {
+              labels: ["Utilisateurs", "Véhicules", "Maintenances"],
+              datasets: [{
+                  data: ["{{ users }}", "{{ cars }}", "{{ maintenances }}"],
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)'
+                  ]
+              }]
+          },
+          options: {
+              responsive: true
+          }
+      });
+
+      var ctx = document.getElementById("stats_color");
+      var stats_all = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: [{% for marque in nbmarque %}
+                         "{{ marque["marque"] }}",
+                       {% endfor %}],
+              datasets: [{
+                  label: 'Marques',
+                  data: [{% for marque in nbmarque %}
+                           "{{ marque["nb_marque"] }}",
+                         {% endfor %}],
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(54, 162, 235, 0.2)',
+                      'rgba(255, 206, 86, 0.2)'
+                  ]
+              }]
+          },
+          options: {
+              responsive: true,
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true,
+                          stepSize: 1
+                      }
+                  }]
+              }
+          }
+      });
+    </script>
 {% endblock %}
