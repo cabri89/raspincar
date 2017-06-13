@@ -65,89 +65,105 @@
     </div>
 </div>
 <div class="row">
-    <h4>Géolocalisation</h4>
-     <div class="col s12"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2622.995428914915!2d2.1519628511994995!3d48.89642427918962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e663066079420d%3A0x8f1d93d4bfae1f67!2s9+Rue+Beaugendre%2C+78400+Chatou!5e0!3m2!1sfr!2sfr!4v1494419521273" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe></div>
-     <div class="col s6"><canvas id="myChart"></canvas></div>
-     <div class="col s6"><canvas id="myChart1"></canvas></div>
+    <h4 id="titleTrajet">Géolocalisation</h4>
+     <div class="col s12" id="map" style="height:250px;"></div>
+     <div class="col s12"><canvas id="myChart"></canvas></div>
+     <!-- <div class="col s6"><canvas id="myChart1"></canvas></div> -->
    </div>
-<script>
-var ctx = document.getElementById("myChart");
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ["Decembre", "Janvier", "Fevrier", "Mars", "Avril", "Mai"],
-        datasets: [{
-            label: 'Litres 100/km',
-            data: [12, 9, 8.6, 5, 6, 7],
-            backgroundColor: [
+   <script>
+    var raspData = [{"lat":48.896343,"lon":2.154412,"temp":20},{"lat":48.897443,"lon":2.154412,"temp":24},{"lat":48.897543,"lon":2.154412,"temp":26},{"lat":48.896643,"lon":2.158412,"temp":21},{"lat":48.899743,"lon":2.154412,"temp":34}];
+    var temperature = [];
+    var labels = [];
+    for (var i = 0; i < raspData.length; i++) {
+        temperature[i] = raspData[i].temp;
+        labels[i] = "";
+    }
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            /*        labels: ["", "", "", "", "", ""],*/
+            labels: labels,
+            datasets: [{
+                label: 'Température (C°)',
+                data: temperature,
+                backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
                 'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
+                ],
+                borderColor: [
                 'rgba(255,99,132,1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
                 'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
+                ],
+                borderWidth: 1
             }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
         }
-    }
-});
+    });
 
-var ctx = document.getElementById("myChart1");
-var myChart1 = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ["Decembre", "Janvier", "Fevrier", "Mars", "Avril", "Mai"],
-        datasets: [{
-            label: '€',
-            data: [120, 190, 30, 50, 20, 30],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        }
+    var coord = [];
+    for (var i = 0; i < raspData.length; i++) {
+        coord[i] = {};
+        coord[i].lat = raspData[i].lat;
+        coord[i].lng = raspData[i].lon;
     }
-});
+
+    function initMap() {
+        google.maps.LatLng.prototype.kmTo = function(a){ 
+            var e = Math, ra = e.PI/180; 
+            var b = this.lat() * ra, c = a.lat() * ra, d = b - c; 
+            var g = this.lng() * ra - a.lng() * ra; 
+            var f = 2 * e.asin(e.sqrt(e.pow(e.sin(d/2), 2) + e.cos(b) * e.cos 
+                (c) * e.pow(e.sin(g/2), 2))); 
+            return f * 6378.137; 
+        }
+
+        google.maps.Polyline.prototype.inKm = function(n){ 
+            var a = this.getPath(n), len = a.getLength(), dist = 0; 
+            for (var i=0; i < len-1; i++) { 
+               dist += a.getAt(i).kmTo(a.getAt(i+1)); 
+           }
+           return dist; 
+       }
+       var title = document.getElementById("titleTrajet");
+       var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 14,
+          center: coord[0],
+          mapTypeId: 'roadmap'
+      });
+
+
+       var flightPath = new google.maps.Polyline({
+          path: coord,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+      });
+      var distance = flightPath.inKm()
+      title.innerText = "Dernier trajet (" + distance.toFixed(3) + "km)";
+       flightPath.setMap(map);
+   }
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAui7r1lhPpk5Jc1nG4-59Kw1U5X2rdkkY&callback=initMap">
 </script>
 <script type="text/javascript">
 $(document).ready(function(){
