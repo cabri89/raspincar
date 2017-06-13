@@ -18,6 +18,14 @@
       <a href="{{ path('app_account_index') }}" class="brand-logo left">Raspincar</a>
       <ul class="right">
          {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+           {% if is_granted('ROLE_ADMIN') %}
+             <li role="listuser">
+               <a href="{{ path('app_adminuser_index') }}">Accueil</a>
+             </li>
+             <li role="listuser">
+               <a href="{{ path('app_adminuser_listuser') }}">Liste des utilisateurs</a>
+             </li>
+           {% endif %}
          <li role="presentation">
             <a href="{{ path('logout') }}">Déconnexion</a>
          </li>
